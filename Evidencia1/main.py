@@ -16,21 +16,21 @@ def sistemaSemaforos(semaforo):
 
 
 def generaSemaforos(cantidad):
-    semaforo = []
-    for i in range(cantidad):
-        print(f"*****       Semaforo {i+1}       *****")
-        izq = parseVueltas("Tiene vuelta a la izquierda? ")
-        der = parseVueltas("Tiene vuelta a la derecha? ")
-        recto = parseVueltas("Va recto? ")
-        direccion = str(input("Ingrese la direccion del semaforo (norte, noroeste, sur, sureste, etc.): "))
-        while (direccion in semaforo.direccion):
-            print("La direccion ya esta ocupada, por favor ingrese otra direccion")
-            direccion = str(input("Ingrese la direccion del semaforo (norte, noroeste, sur, sureste, etc.): "))
-        semaforo.append(Semaforo(tipo, izq, der, recto, direccion))
-        return semaforo
+    semaforos = []
+    for i in range(1, cantidad + 1):
+        print(f"*****       Semaforo {i}       *****")
+        izq = parseVueltas("¿Tiene vuelta a la izquierda? ")
+        der = parseVueltas("¿Tiene vuelta a la derecha? ")
+        recto = parseVueltas("¿Va recto? ")
+        direccion = input("Ingrese la direccion del semaforo (norte, noroeste, sur, sureste, etc.): ").lower()
+        while direccion in [i.direccion for i in semaforos]:
+            print("La dirección ya está ocupada, por favor ingrese otra dirección.")
+            direccion = input("Ingrese la direccion del semaforo (norte, noroeste, sur, sureste, etc.): ").lower()
+        semaforos.append(Semaforo(izq, der, recto, direccion))
+    return semaforos
 
 def main():
-    texto = str(input("Ingrese el sistema de semaforos que desea, para funcionar correctamente debe contener tiempo, cantidad de semaforos: "))
+    texto = str(input("Ingrese el sistema de semaforos que desea, para funcionar correctamente debe contener tiempo y la información semaforos: "))
     texto = parseInput(texto)
     if texto == False:
         main()
