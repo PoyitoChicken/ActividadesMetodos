@@ -1,7 +1,7 @@
 import re
 
+# Convierte la direccion de nombre a grados
 def parseDireccion(direccion):
-    # Parsear la orientacion en grados
     direccion = direccion.lower()
     if direccion == "norte":
         direccion = 0
@@ -25,6 +25,8 @@ def parseDireccion(direccion):
         parseDireccion(direccion)
     return direccion
 
+# Creado para analizar si hay vueltas a la izquierda, derecha o recto
+# Utilizado para parsear inputs de si o no a bools
 def parseVueltas(pregunta):
     texto = str(input(pregunta))
     si = re.search(r'(^s[ií]?|^y(es)?.?)', texto.lower())
@@ -38,22 +40,24 @@ def parseVueltas(pregunta):
         print("El texto ingresado no es valido, intenta de nuevo")
         parseVueltas(pregunta)
 
+# Parsea el tiempo de los semaforos antes entraban tambien minutos pero se cambio a solo segundos pero no se cambio el regex por tiempo
 def parseTiempo(texto):
-    match = re.search(r'(\d{1,2}:\d{1,2}|(\d+m)? ?(\d+s)?)', texto)
-    getMinutes = re.search(r'(\d+m|\d{1,2}:)', texto)
+    match = re.search(r' \d{1,3}s', texto)
     getSeconds = re.search(r'(\d+s|:\d{1,2})', texto)
-    getMinutes = re.search(r'\d+', getMinutes.group(0))
     getSeconds = re.search(r'\d+', getSeconds.group(0))
-    print(f"Minutos: {getMinutes.group(0)} con {getSeconds.group(0)} segundos")
-    return [int(getMinutes.group(0)), int(getSeconds.group(0))]
+    return [int(getSeconds.group(0))]
 
+# Parsea la cantidad cantidad de semaforos
+# Busca si hay un "cantidad" (opcional) y un numero de varios digitos 
+# Seguido de un "semaforo(s)? para ver cuantos semaforos hay"
 def parseCantidad(texto):
-    matchCantidad = re.search(r'(cantidad .*)? ?\d+ semaforos?', texto)
+    matchCantidad = re.search(r'(cantidad .*?)?(\d+)\s+semaforo(s)?', texto)
     if matchCantidad:
         number = re.search(r'\d+', matchCantidad.group(0))
         if number:
             matchCantidad = int(number.group(0))
-    print(matchCantidad)
+    else:
+        raise Exception("No se encontro la cantidad de semaforos")
     return matchCantidad
 
 
@@ -61,7 +65,8 @@ def parseInput(texto):
     try:
         matchTiempo = parseTiempo(texto)
         matchCantidad = parseCantidad(texto)
-    except:
-        print("El texto ingresado no es valido")
+    except Exception as e:
+        print(f"El texto ingresado no es valido {e}")
         return False
     return [matchCantidad, matchTiempo]
+
